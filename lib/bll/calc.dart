@@ -1,13 +1,13 @@
 import 'dart:html';
 import 'dart:math';
-
+/*
 void main (){
   Calculator calculator = new Calculator();
   calculator.push(2);
   calculator.push(4);
   calculator.execute(AddCommand());
   print(calculator.pop());
-}
+}*/
 
 abstract class Command{
   apply(List<num> stack);
