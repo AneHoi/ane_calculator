@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:math';
 /*
 void main (){
@@ -40,7 +39,7 @@ class SubCommand implements Command{
   void apply(List<num> stack){
     num a = stack.removeLast();
     num b = stack.removeLast();
-    stack.add(a-b);
+    stack.add(b-a);
   }
 }
 class MultiCommand implements Command{
@@ -52,9 +51,9 @@ class MultiCommand implements Command{
 }
 class DivideCommand implements Command{
   void apply(List<num> stack){
-    num a = stack.removeLast();
-    num b = stack.removeLast();
-    stack.add(a/b);
+    num a = stack.removeLast(); //2
+    num b = stack.removeLast(); //20
+    stack.add(b/a);
   }
 }
 class PowCommand implements Command{

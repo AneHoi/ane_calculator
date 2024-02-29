@@ -1,4 +1,9 @@
+import 'dart:async';
+
+import 'package:ane_calculator/bll/calc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,11 +37,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var operants;
+  String _oldValues = "";
   String _changeableText = "";
+  String _numberBuilder = "";
+  Calculator calulator = new Calculator();
 
-  void changeText(String i) {
+  void changeOldValues(var i){
     setState(() {
-      _changeableText = _changeableText + " " + i;
+      _oldValues = _oldValues + " $i ,";
+    });
+  }
+  void changeText(var i) {
+    setState(() {
+      _changeableText = _changeableText + " $i";
     });
   }
 
@@ -51,11 +64,19 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Container(
-                color: Colors.blue[50],
+              Expanded(
+                child:
+                    Text(_oldValues, textAlign: TextAlign.right, key: Key('oldValues'),),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
+                    key: Key('display'),
                     _changeableText,
                     style: const TextStyle(
                       fontSize: 24,
@@ -74,24 +95,24 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSpacing: 10,
               crossAxisCount: 4,
               children: <Widget>[
-                buildElement("1"),
-                buildElement("2"),
-                buildElement("3"),
-                buildElement("+"),
+                buildOperant(1),
+                buildOperant(2),
+                buildOperant(3),
+                buildOperator("+"),
+                buildOperant(4),
+                buildOperant(5),
+                buildOperant(6),
+                buildOperator("-"),
+                buildOperant(7),
+                buildOperant(8),
+                buildOperant(9),
 
-                buildElement("4"),
-                buildElement("5"),
-                buildElement("6"),
-                buildElement("-"),
+                buildOperator("*"),
+                buildOperator("#"),
+                buildOperant(0),
 
-                buildElement("7"),
-                buildElement("8"),
-                buildElement("9"),
-                buildElement("*"),
-                buildElement("%"),
-
-                buildElement("0"),
-                buildElement("Enter")
+                buildOperator("%"),
+                buildEnterElement("Enter")
               ],
             ),
           ),
@@ -100,14 +121,62 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Container buildElement(String i) {
+  Container buildEnterElement(String i) {
     return Container(
       child: OutlinedButton(
+        key: ValueKey('$i'),
         onPressed: () {
-          changeText(i);
+          //Push the value to the stack
+          calulator.push(int.parse(_numberBuilder));
+          changeOldValues(_numberBuilder);
+          _numberBuilder = "";
         },
         child: Text(i),
       ),
     );
+  }
+
+  Container buildOperator(String i) {
+    return Container(
+      child: OutlinedButton(
+        key: ValueKey('$i'),
+        onPressed: () {
+          changeText(i);
+          operators(i);
+        },
+        child: Text(i),
+      ),
+    );
+  }
+
+  Container buildOperant(int i) {
+    return Container(
+      child: ElevatedButton(
+        key: Key('$i'),
+        onPressed: () {
+          changeText(i);
+          _numberBuilder = _numberBuilder + "$i";
+          print(_numberBuilder);
+        },
+        child: Text(i.toString()),
+      ),
+    );
+  }
+
+  void operators(String i) {
+    if ("%" == i) {
+      calulator.execute(DivideCommand());
+      _changeableText = calulator.pop().toString();
+      changeText(calulator.pop.toString());
+    } else if ("*" == i) {
+      calulator.execute(MultiCommand());
+      _changeableText = calulator.pop().toString();
+    } else if ("+" == i) {
+      calulator.execute(AddCommand());
+      _changeableText = calulator.pop().toString();
+    } else if ("-" == i) {
+      calulator.execute(SubCommand());
+      _changeableText = calulator.pop().toString();
+    }
   }
 }
