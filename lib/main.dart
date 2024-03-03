@@ -42,9 +42,15 @@ class _MyHomePageState extends State<MyHomePage> {
   String _numberBuilder = "";
   Calculator calulator = new Calculator();
 
-  void changeOldValues(var i){
+  void changeOldValues(var i) {
     setState(() {
       _oldValues = _oldValues + " $i ,";
+    });
+  }
+
+  void viewResult(var i){
+    setState(() {
+      _changeableText = "$i";
     });
   }
   void changeText(var i) {
@@ -65,8 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
           Row(
             children: <Widget>[
               Expanded(
-                child:
-                    Text(_oldValues, textAlign: TextAlign.right, key: Key('oldValues'),),
+                child: Text(
+                  _oldValues,
+                  textAlign: TextAlign.right,
+                  key: Key('oldValues'),
+                ),
               ),
             ],
           ),
@@ -87,7 +96,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
-          Expanded(
+          ConstrainedBox(
+            constraints: BoxConstraints(
+                maxHeight: 500,
+                maxWidth: 500,
+              minHeight: 300,
+              minWidth: 300,
+            ),
             child: GridView.count(
               primary: false,
               padding: const EdgeInsets.all(20),
@@ -106,23 +121,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 buildOperant(7),
                 buildOperant(8),
                 buildOperant(9),
-
                 buildOperator("*"),
-                buildOperator("#"),
+                buildOperator("AC"),
                 buildOperant(0),
-
                 buildOperator("%"),
                 buildEnterElement("Enter")
               ],
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Container buildEnterElement(String i) {
-    return Container(
+  ConstrainedBox buildEnterElement(String i) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 50, maxWidth: 50),
       child: OutlinedButton(
         key: ValueKey('$i'),
         onPressed: () {
@@ -130,6 +144,19 @@ class _MyHomePageState extends State<MyHomePage> {
           calulator.push(int.parse(_numberBuilder));
           changeOldValues(_numberBuilder);
           _numberBuilder = "";
+          _changeableText = '';
+        },
+        child: Text(i),
+      ),
+    );
+  }
+
+  Container buildACElement(String i) {
+    return Container(
+      child: OutlinedButton(
+        key: ValueKey('$i'),
+        onPressed: () {
+          operators(i);
         },
         child: Text(i),
       ),
@@ -141,7 +168,6 @@ class _MyHomePageState extends State<MyHomePage> {
       child: OutlinedButton(
         key: ValueKey('$i'),
         onPressed: () {
-          changeText(i);
           operators(i);
         },
         child: Text(i),
@@ -156,7 +182,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           changeText(i);
           _numberBuilder = _numberBuilder + "$i";
-          print(_numberBuilder);
         },
         child: Text(i.toString()),
       ),
@@ -166,17 +191,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void operators(String i) {
     if ("%" == i) {
       calulator.execute(DivideCommand());
-      _changeableText = calulator.pop().toString();
-      changeText(calulator.pop.toString());
+      viewResult(calulator.pop().toString());
     } else if ("*" == i) {
       calulator.execute(MultiCommand());
       _changeableText = calulator.pop().toString();
     } else if ("+" == i) {
       calulator.execute(AddCommand());
-      _changeableText = calulator.pop().toString();
+      viewResult(calulator.pop().toString());
     } else if ("-" == i) {
       calulator.execute(SubCommand());
-      _changeableText = calulator.pop().toString();
+      viewResult(calulator.pop().toString());
+
+    }else if ("AC" == i){
+      calulator.clearStack();
+      _changeableText = '';
+      _oldValues = '';
     }
   }
 }

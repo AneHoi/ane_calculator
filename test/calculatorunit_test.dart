@@ -45,6 +45,8 @@ void main() {
       expect(divide(2.0, 4.0), 0.5);
       expect(divide(-2.0, 4.0), -0.5);
       expect(divide(-10.0, 5.0), -2);
+      expect(divide(9.0, 4.0), 2.25);
+
     });
 
   });

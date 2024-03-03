@@ -26,6 +26,10 @@ class Calculator{
   num pop() {
     return stack.removeLast();
   }
+
+  void clearStack(){
+    stack.clear();
+  }
 }
 
 class AddCommand implements Command{
