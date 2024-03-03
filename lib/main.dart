@@ -47,6 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
       _oldValues = _oldValues + " $i ,";
     });
   }
+  void clearOldValues(var i){
+    setState(() {
+      _oldValues = '$i';
+    });
+  }
 
   void viewResult(var i){
     setState(() {
@@ -194,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
       viewResult(calulator.pop().toString());
     } else if ("*" == i) {
       calulator.execute(MultiCommand());
-      _changeableText = calulator.pop().toString();
+      viewResult(calulator.pop().toString());
     } else if ("+" == i) {
       calulator.execute(AddCommand());
       viewResult(calulator.pop().toString());
@@ -204,8 +209,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     }else if ("AC" == i){
       calulator.clearStack();
-      _changeableText = '';
-      _oldValues = '';
+      viewResult('');
+      clearOldValues('');
     }
   }
 }

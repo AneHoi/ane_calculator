@@ -18,7 +18,7 @@ void main() {
       // Load app widget.
       await tester.pumpWidget(const MyApp());
 
-      await calculate(5,4,9,'+',tester);
+      await calculate(5, 4, 9, '+', tester);
       await calculate(1, 2, 3, '+', tester);
       await calculate(9, 4, 13, '+', tester);
       await calculate(9, 9, 18, '+', tester);
@@ -27,7 +27,7 @@ void main() {
       // Load app widget.
       await tester.pumpWidget(const MyApp());
 
-      await calculate(5,4,1,'-',tester);
+      await calculate(5, 4, 1, '-', tester);
       await calculate(1, 2, -1, '-', tester);
       await calculate(9, 4, 5, '-', tester);
       await calculate(9, 9, 0, '-', tester);
@@ -36,7 +36,7 @@ void main() {
       // Load app widget.
       await tester.pumpWidget(const MyApp());
 
-      await calculate(5,4,20,'*',tester);
+      await calculate(5, 4, 20, '*', tester);
       await calculate(1, 2, 2, '*', tester);
       await calculate(9, 4, 36, '*', tester);
       await calculate(9, 9, 81, '*', tester);
@@ -45,17 +45,17 @@ void main() {
       // Load app widget.
       await tester.pumpWidget(const MyApp());
 
-      /*await calculate(5,4,1.25,'%',tester);
+      await calculate(5, 4, 1.25, '%', tester);
       await calculate(1, 2, 0.5, '%', tester);
-      await calculate(9, 4, 2.25, '%', tester);*/
-      await calculate(9, 9, 1, '%', tester);
+      await calculate(9, 4, 2.25, '%', tester);
+      await calculate(9, 9, 1.0, '%', tester);
     });
   });
-
 }
 
-Future<void> calculate(int a, int b, int expected, String operator, WidgetTester tester) async {
-
+Future<void> calculate(
+    int a, int b, num expected, String operator, WidgetTester tester) async {
+  await Future.delayed(Duration(seconds: 1));
   await tester.tap(find.byKey(Key('AC')));
   await Future.delayed(Duration(seconds: 1));
 
@@ -85,7 +85,6 @@ Future<void> calculate(int a, int b, int expected, String operator, WidgetTester
   await Future.delayed(Duration(seconds: 1));
   expect(await findValueOfElementByKey('display', tester), '$expected');
   expect(await findValueOfElementByKey('oldValues', tester), ' $a ,' + ' $b ,');
-
 }
 
 findValueOfElementByKey(String key, WidgetTester tester) async {
@@ -95,4 +94,3 @@ findValueOfElementByKey(String key, WidgetTester tester) async {
   var text = finder.evaluate().single.widget as Text;
   return text.data;
 }
-
